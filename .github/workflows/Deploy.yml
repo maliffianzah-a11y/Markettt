@@ -3,16 +3,23 @@ name: Deploy ke GitHub Pages
 on:
   push:
     branches:
-      - main  # Ganti ke 'master' jika branch utamamu bernama master
+      - main 
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # Ini yang bakal nampilin link web lu
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +30,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Pastikan index.html ada di root, jika di folder, ubah '.' menjadi nama folder
           path: '.'
 
       - name: Deploy to GitHub Pages
