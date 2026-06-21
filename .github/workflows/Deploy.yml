@@ -1,47 +1,31 @@
-Nama alur kerja
-
 name: Deploy ke GitHub Pages
 
 on:
-push:
-branches: ["main", "master"]
-workflow_dispatch:
-
-Mengonfigurasi izin keamanan akses GitHub Pages
+  push:
+    branches:
+      - main  # Ganti ke 'master' jika branch utamamu bernama master
 
 permissions:
-contents: read
-pages: write
-id-token: write
-
-Menghindari tumpang tindih deployment yang berjalan bersamaan
-
-concurrency:
-group: "pages"
-cancel-in-progress: true
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-deploy:
-environment:
-name: github-pages
-url: ${{ steps.deployment.outputs.page_url }}
-runs-on: ubuntu-latest
-steps:
-- name: Checkout repositori
-uses: actions/checkout@v4
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  # Menginisialisasi pengaturan lingkungan GitHub Pages
-  - name: Setup Pages
-    uses: actions/configure-pages@v5
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-  # Mengemas file aplikasi PWA
-  - name: Upload artifact HTML & Aset
-    uses: actions/upload-pages-artifact@v3
-    with:
-      path: '.' 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Pastikan index.html ada di root, jika di folder, ubah '.' menjadi nama folder
+          path: '.'
 
-  # Meluncurkan situs PWA ke server live Pages
-  - name: Deploy ke GitHub Pages
-    id: deployment
-    uses: actions/deploy-pages@v4
-    
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
