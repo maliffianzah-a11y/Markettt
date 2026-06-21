@@ -1,37 +1,27 @@
-name: Deploy ke GitHub Pages
+name: Build APK
 
 on:
   push:
-    branches:
-      - main 
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+    branches: [ "main" ]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }} # Ini yang bakal nampilin link web lu
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app
+        path: app/build/outputs/apk/debug/app-debug.apk
