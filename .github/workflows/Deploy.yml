@@ -1,0 +1,20 @@
+
+- name: Checkout repositori
+uses: actions/checkout@v4
+
+  # Menginisialisasi pengaturan lingkungan GitHub Pages
+  - name: Setup Pages
+    uses: actions/configure-pages@v5
+
+  # Jika nantinya kamu menggunakan build tool (seperti Vite/Webpack), tambahkan langkah build di sini
+
+  # Mengemas file aplikasi PWA
+  - name: Upload artifact HTML & Aset
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: '.' 
+
+  # Meluncurkan situs PWA ke server live Pages
+  - name: Deploy ke GitHub Pages
+    id: deployment
+    uses: actions/deploy-pages@v4
